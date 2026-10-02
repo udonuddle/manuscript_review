@@ -1,0 +1,12 @@
+review.html
+versions/
+__pycache__/
+
+# Local agent state and credentials
+.omx/
+.agents/
+.codex/
+.aws/
+.env
+.env.*
+!.env.example

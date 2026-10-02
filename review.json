@@ -1,0 +1,10 @@
+{
+  "_comment": "sources = 첨삭할 원고 파일(이 폴더 기준 상대 경로, .md/.tex/.txt, 여러 개 가능). id 는 브라우저에 저장되는 코멘트의 이름표 - 바꾸면 이전 코멘트가 안 보인다.",
+  "id": "sample-draft",
+  "title": "Sample Manuscript",
+  "subtitle": "첨삭 킷 예시 원고",
+  "authors": "Your Name - Your Lab",
+  "sources": ["manuscript/draft.md"],
+  "output": "review.html",
+  "bridge_port": 8788
+}
