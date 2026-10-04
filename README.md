@@ -1,4 +1,33 @@
-# Manuscript Review — 2단 첨삭 HTML
+# Manuscript annotation MVP
+
+The current milestone is **manuscript → annotation UI → comments.jsonl**.
+`manuscript/draft.md` is development sample content and is never modified by the annotation tool.
+
+```bash
+python build_annotation.py
+```
+
+Open `annotation.html` directly in your browser. No server, network, AI service, or runtime dependencies are needed. Select a paragraph with the mouse or Tab + Enter, complete the comment form, and save. The sidebar lists every comment with Edit, Delete, and Go to paragraph actions. Annotated paragraphs have a gold edge and comment count. Export downloads `comments.jsonl`, with one JSON object per comment (an empty export is an empty file).
+
+Each comment contains `id`, `paragraph_id`, `source`, `section`, `quote`, `type`, `priority`, `instruction`, `reason`, and `status`. Instruction is required; reason is optional. Status is `open`, `resolved`, or `deferred`. Multiple comments may target one paragraph. Comments persist in browser local storage; export a copy before clearing browser data or moving to another browser. Storage failures are shown visibly.
+
+The builder reuses the existing Markdown parser to identify headings, paragraphs, lists, tables, and math/code blocks. Lists and other structured blocks are annotated as a unit. Headings provide section context. Markdown text and math notation are preserved as source text; tables are rendered for readability. No remote fonts or math renderer are loaded.
+
+Paragraph IDs hash the source path and block text, with an occurrence suffix for duplicates. IDs survive rebuilds and unrelated insertions/reordering. Editing block text or moving the source file changes its ID; identical duplicate blocks are distinguished by occurrence order. Unmatched comments remain in the sidebar and export with their original quote, so they are not silently discarded. Reassignment is manual: add a comment to the new target, then delete the old one.
+
+Implementation: `build_annotation.py`, `annotation/index.html`, `annotation/style.css`, and `annotation/app.js`. The standalone output `annotation.html` is generated, not hand-edited. The older `review.html` and bridge workflow below are separate from this MVP.
+
+Verification (browser smoke test requires the already-installed Playwright and Chromium):
+
+```bash
+python -m unittest discover -s tests
+python tests/annotation_browser.py
+node --check annotation/app.js
+```
+
+---
+
+# Legacy Manuscript Review — 2단 첨삭 HTML
 
 논문 원고를 **왼쪽 원고 / 오른쪽 첨삭 메모** 2단 HTML로 띄워 수정 요청을 적고, `.md`로 내보내면 에이전트(Claude Code)가 원고에 반영하고 다시 빌드하는 킷이다. 반영 후에는 **무엇이 바뀌었는지(diff)** 와 **코멘트별 반영 결과**가 같은 화면에 표시된다.
 
